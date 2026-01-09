@@ -1,0 +1,6 @@
+@GamerLog_HostAddress = http://localhost:5138
+
+GET {{GamerLog_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
