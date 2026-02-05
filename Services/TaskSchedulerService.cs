@@ -1,4 +1,5 @@
-﻿namespace GamerLog.Services;
+﻿
+namespace GamerLog.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 public class TaskSchedulerService : BackgroundService
@@ -6,17 +7,19 @@ public class TaskSchedulerService : BackgroundService
     private readonly ILogger<TaskSchedulerService> _logger;
     private readonly TimeSpan _mondayTimeOfDay;
     private readonly IServiceProvider _serviceProvider;
+    private readonly bool _runOnInit;
     
-    public TaskSchedulerService(ILogger<TaskSchedulerService> logger, TimeSpan mondayTimeOfDay, IServiceProvider provider)
+    public TaskSchedulerService(ILogger<TaskSchedulerService> logger, TimeSpan mondayTimeOfDay, IServiceProvider provider, bool runOnInit)
     {
         _logger = logger;
         _mondayTimeOfDay = mondayTimeOfDay;
         _serviceProvider = provider;
+        _runOnInit = runOnInit;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await RunJobAsync(stoppingToken);
+        if (_runOnInit) await RunJobAsync(stoppingToken);
         while (!stoppingToken.IsCancellationRequested)
         {
             var delay = GetDelayToNextMonday(_mondayTimeOfDay);

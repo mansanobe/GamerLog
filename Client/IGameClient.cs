@@ -4,7 +4,7 @@ namespace GamerLog.Client;
 
 public interface IGameClient
 {
-    public Task<List<DigitalGame>> GetGames();
+    public Task<List<Game>> GetGames(int dbGameCount, int lastKnownId);
     
-    public Task<List<Genre>> GetGenres();
+    public Task<List<Genre>> GetGenres(int dbGenresCount);
 }

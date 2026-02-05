@@ -12,8 +12,8 @@ public class IgdbGenreDto
     {
         return new Genre
         {
-            Id = this.Id,
-            Name = this.Name
+            Id = Id,
+            Name = Name
         };
     }
 }

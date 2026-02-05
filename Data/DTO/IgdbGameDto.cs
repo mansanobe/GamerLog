@@ -20,18 +20,18 @@ public class IgdbGameDto
     [JsonPropertyName("cover")]
     public IgdbCoverDto? Cover { get; set; }
     
-    public DigitalGame ToEntity()
+    public Game ToEntity()
     {
-        return new DigitalGame
+        return new Game
         {
-            Title = this.Name,
-            ExternalIgdbId = this.IgdbId,
-            ReleaseDateTimestamp = this.ReleaseDateUnix,
+            Title = Name,
+            ExternalIgdbId = IgdbId,
+            ReleaseDateTimestamp = ReleaseDateUnix,
             GenresId = Genres?.ConvertAll(g =>
             {
                 return g.Id;
-            }).ToList(),
-            CoverUrl = this.Cover?.Url
+            }),
+            CoverUrl = Cover?.Url
         };
     }
 }

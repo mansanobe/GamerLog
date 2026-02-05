@@ -10,11 +10,9 @@ public class GamerLogContext : DbContext
     
     public DbSet<Genre> Genres { get; set; }
     
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Game>()
-            .UseTptMappingStrategy();
-        
-        modelBuilder.Entity<DigitalGame>().ToTable("DigitalGames");
-    }
+    public DbSet<Review> Reviews { get; set; }
+    
+    public DbSet<GameDetails> GameDetails { get; set; }
+    
+    public DbSet<Like> Likes { get; set; }
 }
