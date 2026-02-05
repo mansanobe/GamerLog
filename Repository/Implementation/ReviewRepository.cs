@@ -25,4 +25,19 @@ public class ReviewRepository : IReviewRepository
         return DbContext.Reviews.LongCount(r => r.GameId == gameId);
     }
     
+    public Review GetReviewById(Guid reviewId)
+    {
+        return DbContext.Reviews.FirstOrDefault(r => r.ReviewId == reviewId);
+    }
+    
+    public void SetReviewScoreById(Guid reviewId, decimal score)
+    {
+        var review = DbContext.Reviews.FirstOrDefault(r => r.ReviewId == reviewId);
+        if (review != null)
+        {
+            review.ReviewScore = score;
+            DbContext.SaveChanges();
+        }
+    }
+    
 }

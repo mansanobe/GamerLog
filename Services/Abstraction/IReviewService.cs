@@ -7,5 +7,5 @@ public interface IReviewService
 {
     public Review CreateReview(ReviewDto review);
 
-    public List<string> RateReview(Guid reviewId);
+    public void RateReview(long likes, Guid reviewId);
 }

@@ -7,6 +7,7 @@ namespace GamerLog.Services;
 public class ReviewService : IReviewService
 {
     public IReviewRepository ReviewRepository { get; set; }
+    int decayRate = 2;
 
     public ReviewService(IReviewRepository reviewRepository)
     {
@@ -21,8 +22,11 @@ public class ReviewService : IReviewService
         return newReview;
     }
 
-    public List<string> RateReview(Guid reviewId)
+    public void RateReview(long likes, Guid reviewId)
     {
-        
+        var daysSinceReview = (DateTime.UtcNow - ReviewRepository.GetReviewById(reviewId).LastModified).Days;
+        var divisor = Math.Pow(daysSinceReview, decayRate);
+        var reviewScore = likes / divisor;
+        ReviewRepository.SetReviewScoreById(reviewId, (decimal)reviewScore);
     }
 }
