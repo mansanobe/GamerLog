@@ -2,6 +2,8 @@ using GamerLog.Client;
 using GamerLog.Settings;
 using Microsoft.EntityFrameworkCore;
 using GamerLog.Configuration;
+using GamerLog.Repository;
+using GamerLog.Repository.Abstraction;
 using Microsoft.Extensions.Options;
 using GamerLog.Services;
 
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<GamerLog.Data.GamerLogContext>(options =>
 builder.Services.Configure<IcdbApiSettings>(builder.Configuration.GetSection("IcdbApiSettings"));
 // Twitch Api Settings
 builder.Services.Configure<TwitchApiSettings>(builder.Configuration.GetSection("TwitchApiSettings"));
+// Task Scheduler Settings
+builder.Services.Configure<TaskSchedulerSettings>(builder.Configuration.GetSection("TaskSchedulerSettings"));
 //-------------------------------------- \\
 
 // ---------- Add Services ---------- \\
@@ -38,7 +42,7 @@ builder.Services.AddHttpClient<IGameClient, IcdbClient>((serviceProvider, client
 {
     var settings = serviceProvider.GetRequiredService<IOptions<IcdbApiSettings>>().Value;
     var url = settings.BaseUrl.EndsWith("/") ? settings.BaseUrl : $"{settings.BaseUrl}/";
-    client.BaseAddress = new Uri(settings.BaseUrl);
+    client.BaseAddress = new Uri(url);
 });
 
 builder.Services.AddHttpClient<IcbdTokenConfig>((serviceProvider, client) =>
@@ -54,8 +58,13 @@ builder.Services.AddHostedService<TaskSchedulerService>(provider =>
 {
     var logger = provider.GetRequiredService<ILogger<TaskSchedulerService>>();
     var executionCalendar = new TimeSpan(9, 0, 0);
-    return new TaskSchedulerService(logger, executionCalendar, provider);
+    var settings = provider.GetRequiredService<IOptions<TaskSchedulerSettings>>().Value;
+    return new TaskSchedulerService(logger, executionCalendar, provider, settings.RunOnInit);
 });
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGameService, GameService>();
 
 // }
 
